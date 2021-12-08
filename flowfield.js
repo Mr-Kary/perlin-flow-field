@@ -27,15 +27,18 @@ function FlowField(r) {
   this.init = function() {
     // Reseed noise so we get a new flow field every time
     // Need to get noise working
-    noiseSeed(Math.floor(random(10000)));
+    // noiseSeed(Math.floor(random(10000)));
+    noiseSeed(Math.floor(Math.random()*10000));
     var xoff = 0;
     for (var i = 0; i < this.cols; i++) {
       var yoff = 0;
       for (var j = 0; j < this.rows; j++) {
-        var theta = map(noise(xoff,yoff),0,1,0,TWO_PI);
+        // var theta = map(noise(xoff,yoff),0,1,0,TWO_PI);
+        var theta = noise(xoff,yoff) * Math.PI * 2;
         //var theta = map(sin(xoff)+cos(yoff),-2,2,0,TWO_PI);
         // Polar to cartesian coordinate transformation to get x and y components of the vector
-        this.field[i][j] = createVector(cos(theta),sin(theta));
+        // this.field[i][j] = createVector(cos(theta),sin(theta));
+        this.field[i][j] = new JSVector(cos(theta),sin(theta));
         yoff += 0.1;
       }
       xoff += 0.1;
@@ -52,12 +55,12 @@ function FlowField(r) {
     }
   };
 
-  this.lookup = function(lookup) {
-    var column = Math.floor(constrain(lookup.x/this.resolution,0,this.cols-1));
-    var row = Math.floor(constrain(lookup.y/this.resolution,0,this.rows-1));
-    //println(lookup.x);
-    return this.field[column][row].copy();
-  };
+  // this.lookup = function(lookup) {
+  //   var column = Math.floor(constrain(lookup.x/this.resolution,0,this.cols-1));
+  //   var row = Math.floor(constrain(lookup.y/this.resolution,0,this.rows-1));
+  //   //println(lookup.x);
+  //   return this.field[column][row].copy();
+  // };
 
   // Renders a vector object 'v' as an arrow and a location 'x,y'
   var drawVector = function(v, x, y, scayl) {
@@ -70,9 +73,10 @@ function FlowField(r) {
     context.strokeStyle = "gray";
     // Call vector heading function to get direction (note that pointing to the right is a heading of 0) and rotate
     // rotate(v.heading());
-    context.rotate(v.heading());
+    // context.rotate(v.heading());
+    context.rotate(v.getDirection());
     // Calculate length of vector & scale it to be bigger or smaller if necessary
-    var len = v.mag()*scayl;
+    var len = v.getMagnitude()*scayl;
     // Draw three lines to make an arrow (draw pointing up since we've rotate to the proper direction)
     // line(0,0,len,0);
     context.beginPath();
