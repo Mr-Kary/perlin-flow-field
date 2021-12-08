@@ -28,20 +28,23 @@ function FlowField(r) {
     // Reseed noise so we get a new flow field every time
     // Need to get noise working
     // noiseSeed(Math.floor(random(10000)));
-    noiseSeed(Math.floor(Math.random()*10000));
+    // noiseSeed(Math.floor(Math.random()*10000));
+    noise.seed(Math.floor(Math.random()*10000));
+    noise.seed(Math.random());
     var xoff = 0;
     for (var i = 0; i < this.cols; i++) {
       var yoff = 0;
       for (var j = 0; j < this.rows; j++) {
         // var theta = map(noise(xoff,yoff),0,1,0,TWO_PI);
-        var theta = noise(xoff,yoff) * Math.PI * 2;
+        // var theta = noise(xoff,yoff) * Math.PI * 2;
+        var theta = noise.perlin2(xoff,yoff) * Math.PI * 2;
         //var theta = map(sin(xoff)+cos(yoff),-2,2,0,TWO_PI);
         // Polar to cartesian coordinate transformation to get x and y components of the vector
         // this.field[i][j] = createVector(cos(theta),sin(theta));
-        this.field[i][j] = new JSVector(cos(theta),sin(theta));
-        yoff += 0.1;
+        this.field[i][j] = new JSVector(Math.cos(theta),Math.sin(theta));
+        yoff += 0.05;
       }
-      xoff += 0.1;
+      xoff += 0.05;
     }
   };
   this.init();
